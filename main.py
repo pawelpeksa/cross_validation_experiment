@@ -11,30 +11,36 @@ import time
 
 N_SAMPLES = 100000
 
-cvErrList = list()
-holdoutErrList = list()
-realErrList = list()
-
-cvErrListStd = list()
-holdoutErrListStd = list()
-realErrListStd = list()
-
 samples_arr = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+
 
 def get_seed():
     t = time.time() - int(time.time())
     t *= 10000
 
+
 def main():
     print "cross validation example with artificial dataset"
 
-    for n_samples in samples_arr:
-        run_with_nsample(n_samples)
+    x_all, y_all = make_classification(n_samples=N_SAMPLES, n_features=10, n_redundant=0)
 
-    # for n_samples in [20, 30]:
-    #     run_with_nsample(n_samples)
+    with open('results/diffAcc.dat', 'a') as real_file:
+        real_file.write("#holdout_n \t #diffCV \t #diffCVstd \t #diffholdout \t #diffHoldoutStd \n")
 
-    save_to_file()
+    for n_samples in [50, 100, 150, 200, 250, 300]:
+        diff_cv_arr = list()
+        diff_holdout_arr = list()
+
+        for i in range(11):
+            diff_cv, diff_holdout = run_with_nsample(x_all, y_all, n_samples)
+            diff_cv_arr.append(diff_cv)
+            diff_holdout_arr.append(diff_holdout)
+
+        with open('results/diffAcc.dat', 'a') as real_file:
+            real_file.write(str(n_samples) +\
+                            "\t" + str(np.mean(diff_cv_arr)) + "\t" + str(np.std(diff_cv_arr)) +\
+                            "\t" + str(np.mean(diff_holdout_arr)) + "\t" + str(np.std(diff_holdout_arr)) +\
+                            "\n")
 
 
 def save_to_file():
@@ -52,36 +58,43 @@ def save_to_file():
             real_file.write(str(z) + "\t" + str(x) + "\t" + str(y) + '\n')
 
 
-def run_with_nsample(holdout_n):
+def run_with_nsample(x_all, y_all, holdout_n):
     scores1 = []
     scores2 = []
     scores3 = []
     scores4 = []
     scores5 = []
 
-    n_runs = 50
+    # n_runs = 2
+    #
+    # for i in range(n_runs):
 
-    x_all, y_all = make_classification(n_samples=N_SAMPLES, n_features=10, n_redundant=0)
+    x_holdout, x_without_holdout, y_holdout, y_without_holdout = train_test_split(x_all, y_all, train_size=holdout_n, random_state=get_seed())
 
-    svm_c = 0.0761514827158
+    shuffle(x_holdout, y_holdout, random_state=get_seed())
+    x_train, x_test, y_train, y_test = train_test_split(x_holdout, y_holdout, test_size=0.3, random_state=get_seed())
 
-    for i in range(n_runs):
-        x_holdout, x_without_holdout, y_holdout, y_without_holdout = train_test_split(x_all, y_all,
-                                                                                      train_size=holdout_n,
-                                                                                      random_state=get_seed())
+    svm_c = calc_svm_parameter(x_train, y_train, x_test, y_test)
 
-        err1, err2, err3, err4, err5 = run_example(x_all, y_all, x_holdout, y_holdout, x_without_holdout,
-                                                   y_without_holdout, svm_c)
+    acc1, acc2, acc3, acc4, acc5 = run_example(x_all, y_all, x_holdout, y_holdout, x_without_holdout,y_without_holdout, x_train, y_train, x_test, y_test, svm_c)
 
-        scores1 = np.append(scores1, err1)
-        scores2 = np.append(scores2, err2)
-        scores3 = np.append(scores3, err3)
-        scores4 = np.append(scores4, err4)
-        scores5 = np.append(scores5, err5)
+    scores1 = np.append(scores1, acc1)
+    scores2 = np.append(scores2, acc2)
+    scores3 = np.append(scores3, acc3)
+    scores4 = np.append(scores4, acc4)
+    scores5 = np.append(scores5, acc5)
 
-        print 'progress:', ((i + 1) / float(n_runs)) * 100, '%'
-        
-    print_result(scores1, scores2, scores3, scores4, scores5, holdout_n)
+    # print 'progress:', ((i + 1) / float(n_runs)) * 100, '%'
+    #
+    # print_result(scores1, scores2, scores3, scores4, scores5, holdout_n)
+
+    print holdout_n, " holdout test sample:", acc1
+    print "cv10 on holdout set:", acc2
+    print "entire dataset without holdout:", acc3
+    print "train dataset:", acc4
+    print "entire dataset", acc5
+
+    return abs(acc3 - acc2), abs(acc3 - acc1)
 
 
 def print_result(scores1, scores2, scores3, scores4, scores5, holdout_n):
@@ -102,12 +115,12 @@ def print_result(scores1, scores2, scores3, scores4, scores5, holdout_n):
     realErrListStd.append(np.std(scores3))
 
 
-def calc_svm_parameter(x, y):
-    optimizer = SVM_Optimizer(x, y)
+def calc_svm_parameter(x_train, y_train, x_test, y_test):
+    optimizer = SVM_Optimizer(x_train, y_train, x_test, y_test)
 
-    # svm_c = optimizer.optimize()
+    svm_c = optimizer.optimize()
     # svm_c = 0.373874872174 # N_HOLDOUT = 2000
-    svm_c = 0.0761514827158  # N_HOLDOUT = 5000
+    # svm_c = 0.0761514827158  # N_HOLDOUT = 5000
 
     print svm_c
 
@@ -115,13 +128,31 @@ def calc_svm_parameter(x, y):
 
 
 
-def run_example(x_all, y_all, x_holdout, y_holdout, x_without_holdout, y_without_holdout, svm_c):
+from sklearn.neural_network import MLPClassifier
 
-    shuffle(x_holdout, y_holdout, random_state=get_seed())
-    x_train, x_test, y_train, y_test = train_test_split(x_holdout, y_holdout, test_size=0.3, random_state=get_seed())
+def run_example(x_all, y_all, x_holdout, y_holdout, x_without_holdout, y_without_holdout, x_train, y_train, x_test, y_test, svm_c):
 
     classifier = svm.SVC(kernel='linear', C=svm_c).fit(x_train, y_train)
     classifierCV = svm.SVC(kernel='linear', C=svm_c)
+
+    # classifier = MLPClassifier(solver='adam',
+    #               max_iter=1000,
+    #               alpha=0.01,
+    #               hidden_layer_sizes=(5,),
+    #               random_state=1,
+    #               learning_rate='adaptive').fit(x_train, y_train)
+    #
+    # classifierCV = MLPClassifier(solver='adam',
+    #                            max_iter=1000,
+    #                            alpha=0.01,
+    #                            hidden_layer_sizes=(5,),
+    #                            random_state=1,
+    #                            learning_rate='adaptive')
+
+    # classifier = DecisionTreeClassifier(max_depth=7).fit(x_train, y_train)
+    #
+    # classifierCV  = DecisionTreeClassifier(max_depth=7)
+
 
     score1 = classifier.score(x_test, y_test) # score on test data set
     scoresCV = cross_val_score(classifierCV, x_holdout, y_holdout, cv=10)

@@ -1,17 +1,16 @@
 #!/usr/bin/env gnuplot
 
-set terminal jpeg
+set terminal pdf
 set termoption enhanced
 save_encoding = GPVAL_ENCODING
 set encoding iso_8859_2
 set macro
 
-set key left bottom
-
-set out "result.jpg"
-set title "Taki sobie tytul"
-set ylabel "Skutecznosc"
-set xlabel "Liczba danych ze wszystkich danych (100 000)"
+set out "result.pdf"
+set title "Comparison of holdout method to cv method in case of model evaluation"
+set ylabel "Real accuracy - estimated accuracy"
+set xlabel "Data point used (out of 100000)"
+set xrange [-1:310]
 set grid ytics lt 0 lw 1 lc rgb "#bbbbbb"
 set grid xtics lt 0 lw 1 lc rgb "#bbbbbb"
-plot "cvErr.dat" using 1:2 with line lw 1 title "cvAcc", "holdoutErr.dat" using 1:2 with line lw 1 title "holdoutAcc", "realErr.dat" using 1:2 with line lw 1 title "realAcc"
+plot "diffAcc.dat" using 1:2:3 with errorbars title "cv n=10", "diffAcc.dat" using 1:4:5 with errorbars title "holdout (30%-70%)"
