@@ -22,11 +22,11 @@ class Optimizer():
     def _objective(self, classifier):
         self._iteration += 1
         classifier.fit(self._x_train, self._y_train)
-        return classifier.score(self._x_test, self._y_test)
+        return -classifier.score(self._x_test, self._y_test)
 
     def _print_progress(self, classifier_str):
-        print classifier_str, 'optimizer progress:', str((self._iteration/float(Configuration.HYPEROPT_EVALS_PER_SEARCH)) * 100), '%'
+        print classifier_str, 'optimizer progress:', str(
+            (self._iteration / float(Configuration.HYPEROPT_EVALS_PER_SEARCH)) * 100), '%'
 
     def _init_hyper_space(self):
         raise NotImplementedError('Should have implemented this')
-
