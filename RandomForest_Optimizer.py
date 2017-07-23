@@ -33,6 +33,8 @@ class RandomForest_Optimizer(Optimizer):
         Optimizer._print_progress(self, 'random forest')
         depth, estimators = args
 
+        assert depth > 0 and estimators > 0, 'depth <= 0 or estimators <= 0'
+
         forest = RandomForestClassifier(max_depth=depth, n_estimators=estimators)
         score = Optimizer._objective(self, forest)
 

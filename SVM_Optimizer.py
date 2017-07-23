@@ -28,6 +28,8 @@ class SVM_Optimizer(Optimizer):
         Optimizer._print_progress(self, 'svm')
         C = args
 
+        assert C > 0, 'C <= 0'
+
         SVM = svm.SVC(kernel='linear', C=C)
         score = Optimizer._objective(self, SVM)
 

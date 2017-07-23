@@ -51,7 +51,7 @@ def main():
         result_dict[TREE_KEY] = list(), list()
         result_dict[FOREST_KEY] = list(), list()
 
-        for i in range(11):
+        for i in range(Configuration.RUNS_FOR_SAMPLE + 1):
             single_result_dict = optimize_and_score(x_all, y_all, n_samples)
 
             append_to_result_array(single_result_dict, result_dict, SVM_KEY)
@@ -59,10 +59,10 @@ def main():
             append_to_result_array(single_result_dict, result_dict, TREE_KEY)
             append_to_result_array(single_result_dict, result_dict, FOREST_KEY)
 
-        append_result_to_file(SVM_KEY, result_dict[SVM_KEY])
-        append_result_to_file(ANN_KEY, result_dict[ANN_KEY])
-        append_result_to_file(TREE_KEY, result_dict[TREE_KEY])
-        append_result_to_file(FOREST_KEY, result_dict[FOREST_KEY])
+        append_result_to_file(SVM_KEY, n_samples, *(result_dict[SVM_KEY]))
+        append_result_to_file(ANN_KEY, n_samples, *(result_dict[ANN_KEY]))
+        append_result_to_file(TREE_KEY, n_samples, *(result_dict[TREE_KEY]))
+        append_result_to_file(FOREST_KEY, n_samples, *(result_dict[FOREST_KEY]))
 
 
 def append_to_result_array(single_result_dict, result_dict, KEY):

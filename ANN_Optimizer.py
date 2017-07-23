@@ -40,6 +40,8 @@ class ANN_Optimizer(Optimizer):
         Optimizer._print_progress(self, 'ann')
         hidden_neurons, solver, alpha = args
 
+        assert hidden_neurons > 0 , 'hidden_neurons <= 0'
+
         ann = MLPClassifier(solver=solver,
                             max_iter=Configuration.ANN_OPIMIZER_MAX_ITERATIONS,
                             alpha=alpha,

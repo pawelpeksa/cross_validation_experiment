@@ -29,6 +29,8 @@ class DecisionTree_Optimizer(Optimizer):
         Optimizer._print_progress(self, 'decision tree')
         depth = args
 
+        assert depth > 0, 'depth <= 0'
+
         tree = DecisionTreeClassifier(max_depth=depth)
         score = Optimizer._objective(self, tree)
 
