@@ -6,11 +6,41 @@ save_encoding = GPVAL_ENCODING
 set encoding iso_8859_2
 set macro
 
-set out "result.pdf"
+set out "svm.pdf"
 set title "Comparison of holdout method to cv method in case of model evaluation"
 set ylabel "Real accuracy - estimated accuracy"
 set xlabel "Data point used (out of 100000)"
-set xrange [-1:310]
+set xrange [-1:360]
 set grid ytics lt 0 lw 1 lc rgb "#bbbbbb"
 set grid xtics lt 0 lw 1 lc rgb "#bbbbbb"
-plot "diffAcc.dat" using 1:2:3 with errorbars title "cv n=10", "diffAcc.dat" using 1:4:5 with errorbars title "holdout (30%-70%)"
+plot "svm.dat" using 1:2:3 with errorbars title "cv n=10", "svm.dat" using 1:4:5 with errorbars title "holdout (30%-70%)"
+
+set out "ann.pdf"
+set title "Comparison of holdout method to cv method in case of model evaluation"
+set ylabel "Real accuracy - estimated accuracy"
+set xlabel "Data point used (out of 100000)"
+set xrange [-1:360]
+set grid ytics lt 0 lw 1 lc rgb "#bbbbbb"
+set grid xtics lt 0 lw 1 lc rgb "#bbbbbb"
+plot "ann.dat" using 1:2:3 with errorbars title "cv n=10", "ann.dat" using 1:4:5 with errorbars title "holdout (30%-70%)"
+
+
+set out "forest.pdf"
+set title "Comparison of holdout method to cv method in case of model evaluation"
+set ylabel "Real accuracy - estimated accuracy"
+set xlabel "Data point used (out of 100000)"
+set xrange [-1:360]
+set grid ytics lt 0 lw 1 lc rgb "#bbbbbb"
+set grid xtics lt 0 lw 1 lc rgb "#bbbbbb"
+plot "forest.dat" using 1:2:3 with errorbars title "cv n=10", "forest.dat" using 1:4:5 with errorbars title "holdout (30%-70%)"
+
+
+set out "tree.pdf"
+set title "Comparison of holdout method to cv method in case of model evaluation"
+set ylabel "Real accuracy - estimated accuracy"
+set xlabel "Data point used (out of 100000)"
+set xrange [-1:360]
+set grid ytics lt 0 lw 1 lc rgb "#bbbbbb"
+set grid xtics lt 0 lw 1 lc rgb "#bbbbbb"
+plot "tree.dat" using 1:2:3 with errorbars title "cv n=10", "tree.dat" using 1:4:5 with errorbars title "holdout (30%-70%)"
+
