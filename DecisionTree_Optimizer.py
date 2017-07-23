@@ -1,5 +1,4 @@
-from hyperopt import fmin, tpe, hp
-from sklearn.model_selection import cross_val_score
+from hyperopt import hp, space_eval
 from sklearn.tree import DecisionTreeClassifier
 import numpy as np
 
@@ -38,4 +37,5 @@ class DecisionTree_Optimizer(Optimizer):
 
     def optimize(self):
         result = Optimizer.optimize(self)
-        self.decision_tree.max_depth = result[DEPTH_KEY]
+
+        self.decision_tree.max_depth = result

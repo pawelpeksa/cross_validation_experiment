@@ -1,5 +1,4 @@
-from hyperopt import fmin, tpe, hp
-from sklearn.model_selection import cross_val_score
+from hyperopt import space_eval, hp
 from sklearn.neural_network import MLPClassifier
 from Configuration import Configuration
 from MethodsConfiguration import ANN
@@ -53,14 +52,9 @@ class ANN_Optimizer(Optimizer):
 
         return score
 
-    def _replace_solver_number_with_name(self, result):
-        result[SOLVER_KEY] = self._solvers[result[SOLVER_KEY]]
-        return result
-
     def optimize(self):
         result = Optimizer.optimize(self)
-        result = self._replace_solver_number_with_name(result)
 
-        self.ann.hidden_neurons = result[HIDDEN_NEURONS_KEY]
-        self.ann.solver = result[SOLVER_KEY]
-        self.ann.alpha = result[ALPHA_KEY]
+        self.ann.hidden_neurons = result[0]
+        self.ann.solver = result[1]
+        self.ann.alpha = result[2]

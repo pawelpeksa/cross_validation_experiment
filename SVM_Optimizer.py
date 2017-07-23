@@ -1,9 +1,8 @@
-from hyperopt import fmin, tpe, hp
+from hyperopt import space_eval, hp
 from sklearn import svm
 import numpy as np
 
 from Optimizer import Optimizer
-from Configuration import Configuration
 from MethodsConfiguration import SVM
 
 C_KEY = 'C'
@@ -37,4 +36,5 @@ class SVM_Optimizer(Optimizer):
 
     def optimize(self):
         result = Optimizer.optimize(self)
-        self.svm.C = result[C_KEY]
+
+        self.svm.C = result

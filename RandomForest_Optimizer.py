@@ -1,5 +1,4 @@
-from hyperopt import fmin, tpe, hp
-from sklearn.model_selection import cross_val_score
+from hyperopt import hp, space_eval
 from sklearn.ensemble import RandomForestClassifier
 import numpy as np
 
@@ -43,5 +42,5 @@ class RandomForest_Optimizer(Optimizer):
     def optimize(self):
         result = Optimizer.optimize(self)
 
-        self.random_forest.max_depth = result[DEPTH_KEY]
-        self.random_forest.n_estimators = result[ESTIMATORS_KEY]
+        self.random_forest.max_depth = result[0]
+        self.random_forest.n_estimators = result[1]

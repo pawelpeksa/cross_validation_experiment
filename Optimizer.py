@@ -1,4 +1,4 @@
-from hyperopt import fmin, tpe
+from hyperopt import fmin, tpe, space_eval
 
 from Configuration import Configuration
 
@@ -16,8 +16,9 @@ class Optimizer():
         self._iteration = 0
 
     def optimize(self):
-        return fmin(fn=self._objective, space=self._hyper_space, algo=tpe.suggest,
+        result = fmin(fn=self._objective, space=self._hyper_space, algo=tpe.suggest,
                     max_evals=Configuration.HYPEROPT_EVALS_PER_SEARCH)
+        return space_eval(self._hyper_space, result)
 
     def _objective(self, classifier):
         self._iteration += 1
