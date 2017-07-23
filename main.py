@@ -42,22 +42,6 @@ def main():
                             "\t" + str(np.mean(diff_holdout_arr)) + "\t" + str(np.std(diff_holdout_arr)) +\
                             "\n")
 
-
-def save_to_file():
-
-    with open('results/cvErr.dat', 'a') as cv_file:
-        for x, y, z in zip(cvErrList, cvErrListStd, samples_arr):
-            cv_file.write(str(z) + "\t" + str(x) + "\t" + str(y) + '\n')
-
-    with open('results/holdoutErr.dat', 'a') as holdout_file:
-        for x, y, z in zip(holdoutErrList, holdoutErrListStd, samples_arr):
-            holdout_file.write(str(z) + "\t" + str(x) + "\t" + str(y) + '\n')
-
-    with open('results/realErr.dat', 'a') as real_file:
-        for x, y, z in zip(realErrList, realErrListStd, samples_arr):
-            real_file.write(str(z) + "\t" + str(x) + "\t" + str(y) + '\n')
-
-
 def run_with_nsample(x_all, y_all, holdout_n):
     scores1 = []
     scores2 = []
