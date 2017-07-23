@@ -17,15 +17,13 @@ class SVM_Optimizer(Optimizer):
         self._C_end = C_end
 
         self._init_hyper_space()
-        self._i = 0
+        
 
     def _init_hyper_space(self):
         self._hyper_space = hp.uniform(C_KEY, self._C_begin, self._C_end)
 
     def _objective(self, args):
-        self._i += 1
-        print 'Svm optimizer progress:', str((self._i/float(Configuration.HYPEROPT_EVALS_PER_SEARCH)) * 100), '%'
-
+        Optimizer._print_progress(self, 'svm')
         C = args
 
         SVM = svm.SVC(kernel='linear', C=C)

@@ -34,6 +34,7 @@ class ANN_Optimizer(Optimizer):
 							hp.uniform(ALPHA_KEY, self._alpha_begin, self._alpha_end)]
 	
 	def _objective(self, args):
+		Optimizer._print_progress(self, 'ann')
 		hidden_neurons, solver, alpha = args
 
 		ann = MLPClassifier(solver=solver, 

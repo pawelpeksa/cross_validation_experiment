@@ -28,6 +28,7 @@ class RandomForest_Optimizer(Optimizer):
 							hp.choice(ESTIMATORS_KEY, np.arange(self._depth_begin, self._depth_end + 1))]
 	
 	def _objective(self, args):
+		Optimizer._print_progress(self, 'random forest')
 		depth, estimators = args
 
 		forest = RandomForestClassifier(max_depth=depth, n_estimators=estimators)

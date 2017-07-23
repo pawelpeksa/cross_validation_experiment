@@ -23,6 +23,7 @@ class DecisionTree_Optimizer(Optimizer):
 		self._hyper_space = hp.choice(DEPTH_KEY, np.arange(self._depth_begin, self._depth_end + 1))
 	
 	def _objective(self, args):
+		Optimizer._print_progress(self, 'decision tree')
 		depth = args
 
 		tree = DecisionTreeClassifier(max_depth=depth)
