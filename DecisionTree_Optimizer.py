@@ -11,7 +11,7 @@ DEPTH_KEY = 'depth'
 
 class DecisionTree_Optimizer(Optimizer):
     def __init__(self, x_train, y_train, x_test, y_test, n_folds=10,
-                 depth_begin=1, depth_end=10):
+                 depth_begin=1, depth_end=15):
         Optimizer.__init__(self, x_train, y_train, x_test, y_test, n_folds)
 
         self._depth_begin = depth_begin
