@@ -3,11 +3,8 @@ import time
 import threading
 import numpy as np
 
-from SVM_Optimizer import SVM_Optimizer
-from ANN_Optimizer import ANN_Optimizer
-from DecisionTree_Optimizer import DecisionTree_Optimizer
-from RandomForest_Optimizer import RandomForest_Optimizer
 from MethodsConfiguration import MethodsConfiguration
+from Optimizer import *
 
 from Configuration import Configuration
 
