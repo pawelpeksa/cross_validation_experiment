@@ -1,9 +1,10 @@
 from hyperopt import fmin, tpe, space_eval, hp
 
 from sklearn.tree import DecisionTreeClassifier
-from MethodsConfiguration import SVM
 from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn import svm
+from MethodsConfiguration import SVM
 
 import numpy as np
 
