@@ -5,7 +5,6 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import svm
 from sklearn.model_selection import cross_val_score
-from MethodsConfiguration import SVM
 
 import numpy as np
 
@@ -23,7 +22,7 @@ class Optimizer():
 
         self._n_folds = n_folds
 
-        self._iteration = 0
+        self._iteration = 1
 
     def optimize(self):
         result = fmin(fn=self._objective, space=self._hyper_space, algo=tpe.suggest,
@@ -33,15 +32,14 @@ class Optimizer():
     def _objective(self, classifier):
         self._iteration += 1
 
-	if self._n_folds == 1:
-     	    classifier.fit(self._x_train, self._y_train)
-	    classifier.score(self._x_test, self._y_test)
-	    score = classifier.score
-	else:
-	    x = np.concatenate((self._x_test, self._x_train), axis=0)
-	    y = np.concatenate((self._y_test, self._y_train), axis=0)
+    	if self._n_folds == 1:
+            classifier.fit(self._x_train, self._y_train)
+    	    score = classifier.score(self._x_test, self._y_test)
+    	else:
+    	    x = np.concatenate((self._x_test, self._x_train), axis=0)
+    	    y = np.concatenate((self._y_test, self._y_train), axis=0)
 
-            score_arr = cross_val_score(classifier, self._x_test, self._y_test, cv=self._n_folds, n_jobs=-1)
+            score_arr = cross_val_score(classifier, self._x_test, self._y_test, cv=self._n_folds)
             score = np.mean(score_arr)
 
         return -score
