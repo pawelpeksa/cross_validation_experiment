@@ -39,7 +39,7 @@ class Optimizer():
     	    x = np.concatenate((self._x_test, self._x_train), axis=0)
     	    y = np.concatenate((self._y_test, self._y_train), axis=0)
 
-            score_arr = cross_val_score(classifier, self._x_test, self._y_test, cv=self._n_folds)
+            score_arr = cross_val_score(classifier, self._x_test, self._y_test, cv=self._n_folds, n_jobs=-1)
             score = np.mean(score_arr)
 
         return -score

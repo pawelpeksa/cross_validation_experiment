@@ -86,8 +86,8 @@ def open_file_with_header(name):
 def optimize_and_score(x_all, y_all, holdout_n):
     x_train, y_train, x_test, y_test, x_val, y_val = prepare_data(x_all, y_all, holdout_n)
 
-    config_cv = determine_parameters_all(x_train, y_train, x_test, y_test, 10)
     config_ho = determine_parameters_all(x_train, y_train, x_test, y_test, 1)
+    config_cv = determine_parameters_all(x_train, y_train, x_test, y_test, 10)
 
     ho_score_dict = score_with_config(config_ho, x_train, y_train, x_test, y_test, x_val, y_val)
     cv_score_dict = score_with_config(config_cv, x_train, y_train, x_test, y_test, x_val, y_val)
@@ -149,12 +149,29 @@ def determine_parameters_all(x_train, y_train, x_test, y_test, n_fold):
 
     print config.toDict()
 
-    threads = list()
-
     svm_opt = SVM_Optimizer(x_train, y_train, x_test, y_test, n_fold)
     ann_opt = ANN_Optimizer(x_train, y_train, x_test, y_test, n_fold)
     tree_opt = DecisionTree_Optimizer(x_train, y_train, x_test, y_test, n_fold)
     forest_opt = RandomForest_Optimizer(x_train, y_train, x_test, y_test, n_fold)
+
+    if n_fold < 4:
+        # let scikit take care about parallelism in this case
+        determine_parameters_sequence(svm_opt, ann_opt, tree_opt, forest_opt)
+    else:
+        determine_parameters_parallel(svm_opt, ann_opt, tree_opt, forest_opt)
+
+    config.svm = svm_opt.svm
+    config.ann = ann_opt.ann
+    config.decision_tree = tree_opt.decision_tree
+    config.random_forest = forest_opt.random_forest
+
+    print config.toDict()
+
+    return config
+
+
+def determine_parameters_parallel(svm_opt, ann_opt, tree_opt, forest_opt):
+    threads = list()
 
     threads.append(threading.Thread(target=determine_parameters, args=(svm_opt,)))
     threads.append(threading.Thread(target=determine_parameters, args=(ann_opt,)))
@@ -167,14 +184,12 @@ def determine_parameters_all(x_train, y_train, x_test, y_test, n_fold):
     for thread in threads:
         thread.join()
 
-    config.svm = svm_opt.svm
-    config.ann = ann_opt.ann
-    config.decision_tree = tree_opt.decision_tree
-    config.random_forest = forest_opt.random_forest
 
-    print config.toDict()
-
-    return config
+def determine_parameters_sequence(svm_opt, ann_opt, tree_opt, forest_opt):    
+    determine_parameters(svm_opt)
+    determine_parameters(ann_opt)
+    determine_parameters(tree_opt)
+    determine_parameters(forest_opt)
 
 
 def determine_parameters(optimizer):
