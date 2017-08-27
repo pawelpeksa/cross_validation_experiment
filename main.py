@@ -32,8 +32,6 @@ def get_seed():
 def main():
     print "cross validation example with artificial dataset"
 
-    x_all, y_all = make_classification(n_samples=Configuration.N_SAMPLES, n_features=7, n_redundant=0, n_classes=4, n_informative=5)
-
     open_file_with_header(SVM_KEY)
     open_file_with_header(ANN_KEY)
     open_file_with_header(TREE_KEY)
@@ -48,8 +46,10 @@ def main():
         result_dict[TREE_KEY] = list(), list()
         result_dict[FOREST_KEY] = list(), list()
 
+        x_all, y_all = make_classification(n_samples=n_samples, n_features=7, n_redundant=0, n_classes=4, n_informative=5)
+
         for i in range(Configuration.RUNS_FOR_SAMPLE):
-            single_result_dict = optimize_and_score(x_all, y_all, n_samples) # score_ho, score_cv
+            single_result_dict = optimize_and_score(x_all, y_all) # score_ho, score_cv
 
             append_to_result_array(single_result_dict, result_dict, SVM_KEY)
             append_to_result_array(single_result_dict, result_dict, ANN_KEY)
@@ -84,8 +84,8 @@ def open_file_with_header(name):
         file.write("#n \t #score_ho \t #score_ho_std \t #score_cv \t #score_cv_std \n")
 
 
-def optimize_and_score(x_all, y_all, holdout_n):
-    x_train, y_train, x_test, y_test, x_val, y_val = prepare_data(x_all, y_all, holdout_n)
+def optimize_and_score(x_all, y_all):
+    x_train, y_train, x_test, y_test, x_val, y_val = prepare_data(x_all, y_all)
 
     config_ho = determine_parameters_all(x_train, y_train, x_test, y_test, 1)
     config_cv = determine_parameters_all(x_train, y_train, x_test, y_test, 10)
@@ -102,13 +102,10 @@ def optimize_and_score(x_all, y_all, holdout_n):
     return result_dict
 
 
-def prepare_data(x_all, y_all, holdout_n):
-    x_holdout, x_without_holdout, y_holdout, y_without_holdout = train_test_split(x_all, y_all, train_size=holdout_n,
-                                                                                  random_state=get_seed())
+def prepare_data(x_all, y_all):
 
-
-    shuffle(x_holdout, y_holdout, random_state=get_seed())
-    x_train, x_test, y_train, y_test = train_test_split(x_holdout, y_holdout, test_size=0.4, random_state=get_seed())
+    shuffle(x_all, y_all, random_state=get_seed())
+    x_train, x_test, y_train, y_test = train_test_split(x_all, y_all, test_size=0.4, random_state=get_seed())
     x_val, x_test, y_val, y_test  = train_test_split(x_test, y_test, test_size=0.5, random_state=get_seed())
 
     return x_train, y_train, x_test, y_test, x_val, y_val    
@@ -121,8 +118,8 @@ def score_with_config(config, x_train, y_train, x_test, y_test, x_val, y_val):
 
     score_dict[SVM_KEY]    = score_model(x_train, y_train, x_test, y_test, x_val, y_val, SVM)
     score_dict[ANN_KEY]    = score_model(x_train, y_train, x_test, y_test, x_val, y_val, ann)
-    score_dict[FOREST_KEY] = score_model(x_train, y_train, x_test, y_test, x_val, y_val, tree)
-    score_dict[TREE_KEY]   = score_model(x_train, y_train, x_test, y_test, x_val, y_val, forest)
+    score_dict[FOREST_KEY] = score_model(x_train, y_train, x_test, y_test, x_val, y_val, forest)
+    score_dict[TREE_KEY]   = score_model(x_train, y_train, x_test, y_test, x_val, y_val, tree)
 
     return score_dict
 
