@@ -32,7 +32,7 @@ def get_seed():
 def main():
     print "cross validation example with artificial dataset"
 
-    x_all, y_all = make_classification(n_samples=Configuration.N_SAMPLES, n_features=10, n_redundant=0)
+    x_all, y_all = make_classification(n_samples=Configuration.N_SAMPLES, n_features=7, n_redundant=0, n_classes=4, n_informative=5)
 
     open_file_with_header(SVM_KEY)
     open_file_with_header(ANN_KEY)
@@ -42,12 +42,13 @@ def main():
     for n_samples in Configuration.n_samples_arr:
         result_dict = dict()
 
+        # ho_results, cv_result
         result_dict[SVM_KEY] = list(), list()
         result_dict[ANN_KEY] = list(), list()
         result_dict[TREE_KEY] = list(), list()
         result_dict[FOREST_KEY] = list(), list()
 
-        for i in range(Configuration.RUNS_FOR_SAMPLE + 1):
+        for i in range(Configuration.RUNS_FOR_SAMPLE):
             single_result_dict = optimize_and_score(x_all, y_all, n_samples) # score_ho, score_cv
 
             append_to_result_array(single_result_dict, result_dict, SVM_KEY)
@@ -80,7 +81,7 @@ def append_result_to_file(key, n_samples, result_dict):
 
 def open_file_with_header(name):
     with open('results/' + name + '.dat', 'a') as file:
-        file.write("#holdout_n \t #score_ho \t #score_ho_std \t #score_cv \t #score_cv_std \n")
+        file.write("#n \t #score_ho \t #score_ho_std \t #score_cv \t #score_cv_std \n")
 
 
 def optimize_and_score(x_all, y_all, holdout_n):
@@ -147,6 +148,7 @@ def determine_parameters_all(x_train, y_train, x_test, y_test, n_fold):
     print "determine parameters"
     config = MethodsConfiguration()
 
+    print 'Parameters before optimization:'
     print config.toDict()
 
     svm_opt = SVM_Optimizer(x_train, y_train, x_test, y_test, n_fold)
@@ -165,6 +167,7 @@ def determine_parameters_all(x_train, y_train, x_test, y_test, n_fold):
     config.decision_tree = tree_opt.decision_tree
     config.random_forest = forest_opt.random_forest
 
+    print 'Optimised parameters:'
     print config.toDict()
 
     return config
