@@ -42,7 +42,7 @@ class Optimizer():
             score_arr = cross_val_score(classifier, self._x_test, self._y_test, cv=self._n_folds, n_jobs=-1)
             score = np.mean(score_arr)
 
-        return -score
+        return 1.0/score
 
     def _print_progress(self, classifier_str):
         print classifier_str, 'optimizer progress:', str(
