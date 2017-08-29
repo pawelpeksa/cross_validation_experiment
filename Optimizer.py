@@ -1,10 +1,10 @@
 from hyperopt import fmin, tpe, space_eval, hp
-
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import svm
 from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import GridSearchCV
 
 import numpy as np
 
@@ -25,9 +25,15 @@ class Optimizer():
         self._iteration = 1
 
     def optimize(self):
-        result = fmin(fn=self._objective, space=self._hyper_space, algo=tpe.suggest,
-                    max_evals=Configuration.HYPEROPT_EVALS_PER_SEARCH)
-        return space_eval(self._hyper_space, result)
+	if self._n_folds == 1:    
+            result = fmin(fn=self._objective, space=self._hyper_space, algo=tpe.suggest,
+                          max_evals=Configuration.HYPEROPT_EVALS_PER_SEARCH)
+            return space_eval(self._hyper_space, result)
+	else:
+            x = np.concatenate((self._x_test, self._x_train), axis=0)
+    	    y = np.concatenate((self._y_test, self._y_train), axis=0)
+            
+	    # oprimize with gridsearch
 
     def _objective(self, classifier):
         self._iteration += 1
