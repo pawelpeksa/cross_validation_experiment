@@ -87,9 +87,10 @@ def open_file_with_header(name):
 def optimize_and_score(x_all, y_all):
     x_train, y_train, x_test, y_test, x_val, y_val = prepare_data(x_all, y_all)
 
-    config_ho = determine_parameters_all(x_train, y_train, x_test, y_test, 1)
     config_cv = determine_parameters_all(x_train, y_train, x_test, y_test, 10)
-
+    exit()
+    config_ho = determine_parameters_all(x_train, y_train, x_test, y_test, 1)
+    
     ho_score_dict = score_with_config(config_ho, x_train, y_train, x_test, y_test, x_val, y_val)
     cv_score_dict = score_with_config(config_cv, x_train, y_train, x_test, y_test, x_val, y_val)
 
@@ -157,7 +158,7 @@ def determine_parameters_all(x_train, y_train, x_test, y_test, n_fold):
         # let scikit take care about parallelism in this case
         determine_parameters_sequence(svm_opt, ann_opt, tree_opt, forest_opt)
     else:
-        determine_parameters_parallel(svm_opt, ann_opt, tree_opt, forest_opt)
+        determine_parameters_sequence(svm_opt, ann_opt, tree_opt, forest_opt)
 
     config.svm = svm_opt.svm
     config.ann = ann_opt.ann
