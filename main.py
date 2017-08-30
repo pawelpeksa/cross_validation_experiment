@@ -88,7 +88,6 @@ def optimize_and_score(x_all, y_all):
     x_train, y_train, x_test, y_test, x_val, y_val = prepare_data(x_all, y_all)
 
     config_cv = determine_parameters_all(x_train, y_train, x_test, y_test, 10)
-    exit()
     config_ho = determine_parameters_all(x_train, y_train, x_test, y_test, 1)
     
     ho_score_dict = score_with_config(config_ho, x_train, y_train, x_test, y_test, x_val, y_val)
