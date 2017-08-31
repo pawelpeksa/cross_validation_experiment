@@ -215,7 +215,7 @@ HIDDEN_NEURONS_KEY = 'hidden_neurons'
 class ANN_Optimizer(Optimizer):
     def __init__(self, x_train, y_train, x_test, y_test, n_folds=10,
                  hid_neurons_begin=1, hid_neurons_end=10,
-                 alpha_begin=1, alpha_end=10):
+                 alpha_begin=0.001, alpha_end=5):
         Optimizer.__init__(self, x_train, y_train, x_test, y_test, n_folds)
 
         self._hid_neurons_begin = hid_neurons_begin
