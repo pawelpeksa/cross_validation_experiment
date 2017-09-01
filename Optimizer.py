@@ -73,8 +73,8 @@ ESTIMATORS_KEY = 'estimators'
 
 class RandomForest_Optimizer(Optimizer):
     def __init__(self, x_train, y_train, x_test, y_test, n_folds=10,
-                 depth_begin=1, depth_end=10,
-                 estimators_begin=2, estimators_end=30):
+                 depth_begin=1, depth_end=15,
+                 estimators_begin=2, estimators_end=40):
         Optimizer.__init__(self, x_train, y_train, x_test, y_test, n_folds)
 
         self._depth_begin = depth_begin
@@ -123,7 +123,7 @@ class RandomForest_Optimizer(Optimizer):
 C_KEY = 'C'
 
 class SVM_Optimizer(Optimizer):
-    def __init__(self, x_train, y_train, x_test, y_test, n_folds=10, C_begin=2**-5, C_end=2):
+    def __init__(self, x_train, y_train, x_test, y_test, n_folds=10, C_begin=2**-5, C_end=4):
         Optimizer.__init__(self, x_train, y_train, x_test, y_test, n_folds)
 
         self._C_begin = C_begin
@@ -157,7 +157,7 @@ class SVM_Optimizer(Optimizer):
 	self._print_grid_log()
 
 	SVM = svm.SVC()
-	clf = GridSearchCV(SVM, {'kernel':('linear',), C_KEY:np.random.uniform(self._C_begin, self._C_end, 300)}, cv=10, n_jobs=8)
+	clf = GridSearchCV(SVM, {'kernel':('linear',), C_KEY:np.random.uniform(self._C_begin, self._C_end, 400)}, cv=10, n_jobs=8)
 	x,y = self.cv_dataset()
 	clf.fit(x,y)
 	best = clf.best_params_
@@ -168,7 +168,7 @@ DEPTH_KEY = 'depth'
 
 class DecisionTree_Optimizer(Optimizer):
     def __init__(self, x_train, y_train, x_test, y_test, n_folds=10,
-                 depth_begin=1, depth_end=15):
+                 depth_begin=1, depth_end=20):
         Optimizer.__init__(self, x_train, y_train, x_test, y_test, n_folds)
 
         self._depth_begin = depth_begin
@@ -215,7 +215,7 @@ HIDDEN_NEURONS_KEY = 'hidden_neurons'
 class ANN_Optimizer(Optimizer):
     def __init__(self, x_train, y_train, x_test, y_test, n_folds=10,
                  hid_neurons_begin=1, hid_neurons_end=10,
-                 alpha_begin=0.001, alpha_end=5):
+                 alpha_begin=0.0001, alpha_end=5):
         Optimizer.__init__(self, x_train, y_train, x_test, y_test, n_folds)
 
         self._hid_neurons_begin = hid_neurons_begin
@@ -269,7 +269,7 @@ class ANN_Optimizer(Optimizer):
     def gridsearchoptimize(self):
 	self._print_grid_log()
         ann = MLPClassifier()
-	clf = GridSearchCV(ann, {'solver':('lbfgs','sgd','adam'), 'alpha':np.random.uniform(self._alpha_begin, self._alpha_end, 50), 'hidden_layer_sizes': self.hidden_layers_parameter()}, n_jobs=8, cv=10)
+	clf = GridSearchCV(ann, {'solver':('lbfgs','sgd','adam'), 'alpha':np.random.uniform(self._alpha_begin, self._alpha_end, 75), 'hidden_layer_sizes': self.hidden_layers_parameter()}, n_jobs=8, cv=10)
 	x,y = self.cv_dataset()
 	clf.fit(x,y)
 	best = clf.best_params_
