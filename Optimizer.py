@@ -226,7 +226,7 @@ class ANN_Optimizer(Optimizer):
 
         self.ann = ANN()
 
-        self._solvers = ['lbfgs', 'sgd', 'adam']
+        self._solvers = ['adam']
         self._init_hyper_space()
 
     def _init_hyper_space(self):
@@ -268,8 +268,8 @@ class ANN_Optimizer(Optimizer):
 
     def gridsearchoptimize(self):
 	self._print_grid_log()
-        ann = MLPClassifier()
-	clf = GridSearchCV(ann, {'solver':('lbfgs','sgd','adam'), 'alpha':np.random.uniform(self._alpha_begin, self._alpha_end, 75), 'hidden_layer_sizes': self.hidden_layers_parameter()}, n_jobs=8, cv=10)
+        ann = MLPClassifier(max_iter=500)
+	clf = GridSearchCV(ann, {'solver':('adam',), 'alpha':np.random.uniform(self._alpha_begin, self._alpha_end, 75), 'hidden_layer_sizes': self.hidden_layers_parameter()}, n_jobs=8, cv=10)
 	x,y = self.cv_dataset()
 	clf.fit(x,y)
 	best = clf.best_params_

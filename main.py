@@ -46,7 +46,7 @@ def main():
         result_dict[TREE_KEY] = list(), list()
         result_dict[FOREST_KEY] = list(), list()
 
-        x_all, y_all = make_classification(n_samples=n_samples, n_features=7, n_redundant=0, n_classes=4, n_informative=5)
+        x_all, y_all = make_classification(n_samples=n_samples, n_features=4, n_redundant=0, n_classes=3, n_informative=4)
 
         for i in range(Configuration.RUNS_FOR_SAMPLE):
             single_result_dict = optimize_and_score(x_all, y_all) # score_ho, score_cv
