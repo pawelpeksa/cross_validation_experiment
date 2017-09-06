@@ -40,7 +40,7 @@ class Optimizer():
         x = np.concatenate((self._x_test, self._x_train), axis=0)
     	y = np.concatenate((self._y_test, self._y_train), axis=0)
 	
-	shuffle(x, y, get_seed())
+	shuffle(x, y, random_state=get_seed())
 
 	return x, y
 

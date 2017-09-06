@@ -195,7 +195,7 @@ def score_model(x_train, y_train, x_test, y_test, x_val, y_val, classifier):
     x_train = np.concatenate((x_test, x_train), axis=0)
     y_train = np.concatenate((y_test, y_train), axis=0)
 	
-    shuffle(x_train, y_train, get_seed())
+    shuffle(x_train, y_train, random_state=get_seed())
 
     classifier.fit(x_train, y_train)
 
