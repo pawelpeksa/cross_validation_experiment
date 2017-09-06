@@ -7,42 +7,22 @@ set encoding iso_8859_2
 set macro
 
 set xtics 0,100,1060
-
-set out "svm.pdf"
-set title "Comparison of holdout method to cv method in case of model evaluation"
-set ylabel "Accuracy"
-set xlabel "Data point used"
+set ylabel "Skuteczność"
+set xlabel "Liczba wykorzystanych rekordów"
+set title ""
 set xrange [150:1060]
-set grid ytics lt 0 lw 1 lc rgb "#bbbbbb"
-set grid xtics lt 0 lw 1 lc rgb "#bbbbbb"
-plot "svm.dat" using 1:2:3 with errorbars title "holdout (30%-70%)", "svm.dat" using 1:4:5 with errorbars title "cv n=10"
 
-set out "ann.pdf"
-set title "Comparison of holdout method to cv method in case of model evaluation"
-set ylabel "Accuracy"
-set xlabel "Data point used"
-set xrange [150:1060]
-set grid ytics lt 0 lw 1 lc rgb "#bbbbbb"
-set grid xtics lt 0 lw 1 lc rgb "#bbbbbb"
-plot "ann.dat" using 1:2:3 with errorbars title "holdout (30%-70%)", "ann.dat" using 1:4:5 with errorbars title "cv n=10"
+set out "cv_svm.pdf"
+plot "svm.dat" using 1:2:3 with errorbars title "podejście tradycyjne", "svm.dat" using 1:4:5 with errorbars title "walidacja krzyżowa przy k=10"
+
+set out "cv_ann.pdf"
+plot "ann.dat" using 1:2:3 with errorbars title "podejście tradycyjne", "ann.dat" using 1:4:5 with errorbars title "walidacja krzyżowa przy k=10"
 
 
-set out "forest.pdf"
-set title "Comparison of holdout method to cv method in case of model evaluation"
-set ylabel "Accuracy"
-set xlabel "Data point used"
-set xrange [150:1060]
-set grid ytics lt 0 lw 1 lc rgb "#bbbbbb"
-set grid xtics lt 0 lw 1 lc rgb "#bbbbbb"
-plot "forest.dat" using 1:2:3 with errorbars title "holdout (30%-70%)", "forest.dat" using 1:4:5 with errorbars title "cv n=10"
+set out "cv_forest.pdf"
+plot "forest.dat" using 1:2:3 with errorbars title "podejście tradycyjne", "forest.dat" using 1:4:5 with errorbars title "walidacja krzyżowa przy k=10"
 
 
-set out "tree.pdf"
-set title "Comparison of holdout method to cv method in case of model evaluation"
-set ylabel "Accuracy"
-set xlabel "Data point used"
-set xrange [150:1060]
-set grid ytics lt 0 lw 1 lc rgb "#bbbbbb"
-set grid xtics lt 0 lw 1 lc rgb "#bbbbbb"
-plot "tree.dat" using 1:2:3 with errorbars title "holdout (30%-70%)", "tree.dat" using 1:4:5 with errorbars title "cv n=10"
+set out "cv_tree.pdf"
+plot "tree.dat" using 1:2:3 with errorbars title "podejście tradycyjne", "tree.dat" using 1:4:5 with errorbars title "walidacja krzyżowa przy k=10"
 
