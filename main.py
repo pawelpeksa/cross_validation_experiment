@@ -40,9 +40,8 @@ def main():
         result_dict[TREE_KEY] = list(), list()
         result_dict[FOREST_KEY] = list(), list()
 
-        x_all, y_all = make_classification(n_samples=n_samples, n_features=4, n_redundant=0, n_classes=3, n_informative=4)
-
         for i in range(Configuration.RUNS_FOR_SAMPLE):
+            x_all, y_all = make_classification(n_samples=n_samples, n_features=5, n_redundant=0, n_classes=4, n_informative=5)
             single_result_dict = optimize_and_score(x_all, y_all) # score_ho, score_cv
 
             append_to_result_array(single_result_dict, result_dict, SVM_KEY)
@@ -194,7 +193,7 @@ def determine_parameters(optimizer):
 def score_model(x_train, y_train, x_test, y_test, x_val, y_val, classifier):
     x_train = np.concatenate((x_test, x_train), axis=0)
     y_train = np.concatenate((y_test, y_train), axis=0)
-	
+
     shuffle(x_train, y_train, random_state=get_seed())
 
     classifier.fit(x_train, y_train)
