@@ -1,5 +1,4 @@
 from copy import deepcopy
-import time
 import threading
 import numpy as np
 
@@ -17,16 +16,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.datasets import make_classification
 from sklearn.utils import shuffle
 
+from Utils import get_seed
 TREE_KEY = 'tree'
 FOREST_KEY = 'forest'
 ANN_KEY = 'ann'
 SVM_KEY = 'svm'
-
-
-def get_seed():
-    t = time.time() - int(time.time())
-    t *= 1000000
-    return int(t)
 
 
 def main():
@@ -105,8 +99,8 @@ def optimize_and_score(x_all, y_all):
 def prepare_data(x_all, y_all):
 
     shuffle(x_all, y_all, random_state=get_seed())
-    x_train, x_test, y_train, y_test = train_test_split(x_all, y_all, test_size=0.4, random_state=get_seed())
-    x_val, x_test, y_val, y_test  = train_test_split(x_test, y_test, test_size=0.5, random_state=get_seed())
+    x_train, x_test, y_train, y_test = train_test_split(x_all, y_all, test_size=0.5, random_state=get_seed())
+    x_val, x_test, y_val, y_test  = train_test_split(x_test, y_test, test_size=0.3, random_state=get_seed())
 
     return x_train, y_train, x_test, y_test, x_val, y_val    
 
@@ -200,6 +194,8 @@ def determine_parameters(optimizer):
 def score_model(x_train, y_train, x_test, y_test, x_val, y_val, classifier):
     x_train = np.concatenate((x_test, x_train), axis=0)
     y_train = np.concatenate((y_test, y_train), axis=0)
+	
+    shuffle(x_train, y_train, get_seed())
 
     classifier.fit(x_train, y_train)
 

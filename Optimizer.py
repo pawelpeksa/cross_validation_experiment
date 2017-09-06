@@ -5,11 +5,13 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn import svm
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import GridSearchCV
+from sklearn.utils import shuffle
 
 import numpy as np
 
 from Configuration import Configuration
 from MethodsConfiguration import *
+from Utils import get_seed
 
 
 class Optimizer():
@@ -37,6 +39,8 @@ class Optimizer():
     def cv_dataset(self):
         x = np.concatenate((self._x_test, self._x_train), axis=0)
     	y = np.concatenate((self._y_test, self._y_train), axis=0)
+	
+	shuffle(x, y, get_seed())
 
 	return x, y
 
