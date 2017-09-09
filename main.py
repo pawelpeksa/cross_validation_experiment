@@ -41,7 +41,7 @@ def main():
         result_dict[FOREST_KEY] = list(), list()
 
         for i in range(Configuration.RUNS_FOR_SAMPLE):
-            x_all, y_all = make_classification(n_samples=n_samples, n_features=5, n_redundant=0, n_classes=4, n_informative=5)
+            x_all, y_all = make_classification(n_samples=n_samples, n_features=10, n_redundant=0, n_classes=5, n_informative=10)
             single_result_dict = optimize_and_score(x_all, y_all) # score_ho, score_cv
 
             append_to_result_array(single_result_dict, result_dict, SVM_KEY)
