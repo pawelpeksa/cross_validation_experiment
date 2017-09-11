@@ -172,7 +172,7 @@ DEPTH_KEY = 'depth'
 
 class DecisionTree_Optimizer(Optimizer):
     def __init__(self, x_train, y_train, x_test, y_test, n_folds=10,
-                 depth_begin=1, depth_end=20):
+                 depth_begin=1, depth_end=40):
         Optimizer.__init__(self, x_train, y_train, x_test, y_test, n_folds)
 
         self._depth_begin = depth_begin
@@ -205,7 +205,7 @@ class DecisionTree_Optimizer(Optimizer):
 	 self._print_grid_log()
 
 	 tree = DecisionTreeClassifier()
-	 clf = GridSearchCV(tree, {'max_depth':np.arange(self._depth_begin, self._depth_end+1)}, cv=self._n_folds, n_jobs=8)
+	 clf = GridSearchCV(tree, {'max_depth':np.arange(self._depth_begin, self._depth_end+1, 2)}, cv=self._n_folds, n_jobs=8)
 	 x,y = self.cv_dataset()
 	 clf.fit(x,y)
 	 best = clf.best_params_
@@ -218,7 +218,7 @@ HIDDEN_NEURONS_KEY = 'hidden_neurons'
 
 class ANN_Optimizer(Optimizer):
     def __init__(self, x_train, y_train, x_test, y_test, n_folds=10,
-                 hid_neurons_begin=1, hid_neurons_end=10,
+                 hid_neurons_begin=1, hid_neurons_end=50,
                  alpha_begin=0.0001, alpha_end=5):
         Optimizer.__init__(self, x_train, y_train, x_test, y_test, n_folds)
 
@@ -235,7 +235,7 @@ class ANN_Optimizer(Optimizer):
 
     def _init_hyper_space(self):
         self._hyper_space = [
-            hp.choice(HIDDEN_NEURONS_KEY, np.arange(self._hid_neurons_begin, self._hid_neurons_end + 1)),
+            hp.choice(HIDDEN_NEURONS_KEY, np.arange(self._hid_neurons_begin, self._hid_neurons_end + 1, 2)),
             hp.choice(SOLVER_KEY, self._solvers),
             hp.uniform(ALPHA_KEY, self._alpha_begin, self._alpha_end)]
 
@@ -273,7 +273,7 @@ class ANN_Optimizer(Optimizer):
     def gridsearchoptimize(self):
 	self._print_grid_log()
         ann = MLPClassifier(max_iter=500)
-	clf = GridSearchCV(ann, {'solver':('adam',), 'alpha':np.random.uniform(self._alpha_begin, self._alpha_end, 75), 'hidden_layer_sizes': self.hidden_layers_parameter()}, n_jobs=8, cv=10)
+	clf = GridSearchCV(ann, {'solver':('adam',), 'alpha':np.random.uniform(self._alpha_begin, self._alpha_end, 50), 'hidden_layer_sizes': self.hidden_layers_parameter()}, n_jobs=8, cv=10)
 	x,y = self.cv_dataset()
 	clf.fit(x,y)
 	best = clf.best_params_

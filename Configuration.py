@@ -8,4 +8,4 @@ class Configuration:
 
     N_SAMPLES = 100000
     RUNS_FOR_SAMPLE = 10
-    n_samples_arr = [200, 500, 1000, 1500, 2000]
+    n_samples_arr = [500, 1000, 1500]
