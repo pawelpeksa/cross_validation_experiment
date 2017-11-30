@@ -39,11 +39,11 @@ def main():
         result_dict[ANN_KEY] = list(), list()
         result_dict[TREE_KEY] = list(), list()
         result_dict[FOREST_KEY] = list(), list()
-	
-	x_all, y_all = make_classification(n_samples=n_samples, n_features=10, n_redundant=0, n_classes=5, n_informative=10)
+
+        x_all, y_all = make_classification(n_samples=n_samples, n_features=10, n_redundant=0, n_classes=5, n_informative=10)
 
         for i in range(Configuration.RUNS_FOR_SAMPLE):
-            
+
             single_result_dict = optimize_and_score(x_all, y_all) # score_ho, score_cv
 
             append_to_result_array(single_result_dict, result_dict, SVM_KEY)
@@ -84,7 +84,7 @@ def optimize_and_score(x_all, y_all):
 
     config_cv = determine_parameters_all(x_train, y_train, x_test, y_test, 10)
     config_ho = determine_parameters_all(x_train, y_train, x_test, y_test, 1)
-    
+
     ho_score_dict = score_with_config(config_ho, x_train, y_train, x_test, y_test, x_val, y_val)
     cv_score_dict = score_with_config(config_cv, x_train, y_train, x_test, y_test, x_val, y_val)
 
@@ -103,7 +103,7 @@ def prepare_data(x_all, y_all):
     x_train, x_test, y_train, y_test = train_test_split(x_all, y_all, test_size=0.5, random_state=get_seed())
     x_val, x_test, y_val, y_test  = train_test_split(x_test, y_test, test_size=0.3, random_state=get_seed())
 
-    return x_train, y_train, x_test, y_test, x_val, y_val    
+    return x_train, y_train, x_test, y_test, x_val, y_val
 
 
 def score_with_config(config, x_train, y_train, x_test, y_test, x_val, y_val):
@@ -119,7 +119,7 @@ def score_with_config(config, x_train, y_train, x_test, y_test, x_val, y_val):
     return score_dict
 
 
-def clfs_with_config(config):    
+def clfs_with_config(config):
     SVM = svm.SVC(kernel='linear', C=config.svm.C)
 
     ann = MLPClassifier(solver=config.ann.solver,
@@ -180,7 +180,7 @@ def determine_parameters_parallel(svm_opt, ann_opt, tree_opt, forest_opt):
         thread.join()
 
 
-def determine_parameters_sequence(svm_opt, ann_opt, tree_opt, forest_opt):    
+def determine_parameters_sequence(svm_opt, ann_opt, tree_opt, forest_opt):
     determine_parameters(svm_opt)
     determine_parameters(ann_opt)
     determine_parameters(tree_opt)
@@ -201,7 +201,7 @@ def score_model(x_train, y_train, x_test, y_test, x_val, y_val, classifier):
     classifier.fit(x_train, y_train)
 
     return classifier.score(x_val, y_val)
-    
+
 
 if __name__ == '__main__':
     main()
