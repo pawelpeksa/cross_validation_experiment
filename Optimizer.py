@@ -27,30 +27,30 @@ class Optimizer():
         self._iteration = 1
 
     def optimize(self):
-	if self._n_folds == 1:    
-            print "optimizing with hyperopt" 
+        if self._n_folds == 1:
+            print "optimizing with hyperopt"
             result = fmin(fn=self._objective, space=self._hyper_space, algo=tpe.suggest,
                           max_evals=Configuration.HYPEROPT_EVALS_PER_SEARCH)
             return space_eval(self._hyper_space, result)
-	else:
-            print "optimizing with scikit learn gread search"      
-	    return self.gridsearchoptimize()
+        else:
+            print "optimizing with scikit learn gread search"
+            return self.gridsearchoptimize()
 
     def cv_dataset(self):
         x = np.concatenate((self._x_test, self._x_train), axis=0)
-    	y = np.concatenate((self._y_test, self._y_train), axis=0)
-	
-	shuffle(x, y, random_state=get_seed())
+        y = np.concatenate((self._y_test, self._y_train), axis=0)
 
-	return x, y
+        shuffle(x, y, random_state=get_seed())
+
+        return x, y
 
     def _objective(self, classifier):
         self._iteration += 1
 
-    	if self._n_folds == 1:
+        if self._n_folds == 1:
             classifier.fit(self._x_train, self._y_train)
-    	    score = classifier.score(self._x_test, self._y_test)
-    	else:
+            score = classifier.score(self._x_test, self._y_test)
+        else:
             x, y = self.cv_dataset()
 
             score_arr = cross_val_score(classifier, self._x_test, self._y_test, cv=self._n_folds, n_jobs=-1)
@@ -111,15 +111,15 @@ class RandomForest_Optimizer(Optimizer):
         self.random_forest.max_depth = result[0]
         self.random_forest.n_estimators = result[1]
 
-    def gridsearchoptimize(self):	
-	self._print_grid_log()
+    def gridsearchoptimize(self):
+        self._print_grid_log()
 
-	forest = RandomForestClassifier()
-	clf = GridSearchCV(forest, {'max_depth':np.arange(self._depth_begin, self._depth_end+1),'n_estimators':np.arange(self._estimators_begin, self._estimators_end + 1)}, cv=self._n_folds, n_jobs=8)
-	x,y = self.cv_dataset()
-	clf.fit(x,y)
-	best = clf.best_params_
-	return [best['max_depth'], best['n_estimators']]
+        forest = RandomForestClassifier()
+        clf = GridSearchCV(forest, {'max_depth':np.arange(self._depth_begin, self._depth_end+1),'n_estimators':np.arange(self._estimators_begin, self._estimators_end + 1)}, cv=self._n_folds, n_jobs=8)
+        x,y = self.cv_dataset()
+        clf.fit(x,y)
+        best = clf.best_params_
+        return [best['max_depth'], best['n_estimators']]
 
 
 
@@ -157,15 +157,15 @@ class SVM_Optimizer(Optimizer):
 
         self.svm.C = result
 
-    def gridsearchoptimize(self):	
-	self._print_grid_log()
+    def gridsearchoptimize(self):
+        self._print_grid_log()
 
-	SVM = svm.SVC()
-	clf = GridSearchCV(SVM, {'kernel':('linear',), C_KEY:np.random.uniform(self._C_begin, self._C_end, 400)}, cv=10, n_jobs=8)
-	x,y = self.cv_dataset()
-	clf.fit(x,y)
-	best = clf.best_params_
-	return best[C_KEY]
+        SVM = svm.SVC()
+        clf = GridSearchCV(SVM, {'kernel':('linear',), C_KEY:np.random.uniform(self._C_begin, self._C_end, 400)}, cv=10, n_jobs=8)
+        x,y = self.cv_dataset()
+        clf.fit(x,y)
+        best = clf.best_params_
+        return best[C_KEY]
 
 
 DEPTH_KEY = 'depth'
@@ -201,15 +201,15 @@ class DecisionTree_Optimizer(Optimizer):
 
         self.decision_tree.max_depth = result
 
-    def gridsearchoptimize(self):	
-	 self._print_grid_log()
+    def gridsearchoptimize(self):
+        self._print_grid_log()
 
-	 tree = DecisionTreeClassifier()
-	 clf = GridSearchCV(tree, {'max_depth':np.arange(self._depth_begin, self._depth_end+1)}, cv=self._n_folds, n_jobs=8)
-	 x,y = self.cv_dataset()
-	 clf.fit(x,y)
-	 best = clf.best_params_
-	 return best['max_depth']
+        tree = DecisionTreeClassifier()
+        clf = GridSearchCV(tree, {'max_depth':np.arange(self._depth_begin, self._depth_end+1)}, cv=self._n_folds, n_jobs=8)
+        x,y = self.cv_dataset()
+        clf.fit(x,y)
+        best = clf.best_params_
+        return best['max_depth']
 
 
 SOLVER_KEY = 'solver'
@@ -262,22 +262,22 @@ class ANN_Optimizer(Optimizer):
         self.ann.hidden_neurons = result[0]
         self.ann.solver = result[1]
         self.ann.alpha = result[2]
-    
-    def hidden_layers_parameter(self):
-	layers = list()
-	for n in np.arange(self._hid_neurons_begin, self._hid_neurons_end):
-	    layers.append((n,))
 
-	return layers
+    def hidden_layers_parameter(self):
+        layers = list()
+        for n in np.arange(self._hid_neurons_begin, self._hid_neurons_end):
+            layers.append((n,))
+
+        return layers
 
     def gridsearchoptimize(self):
-	self._print_grid_log()
+        self._print_grid_log()
         ann = MLPClassifier(max_iter=500)
-	clf = GridSearchCV(ann, {'solver':('adam',), 'alpha':np.random.uniform(self._alpha_begin, self._alpha_end, 75), 'hidden_layer_sizes': self.hidden_layers_parameter()}, n_jobs=8, cv=10)
-	x,y = self.cv_dataset()
-	clf.fit(x,y)
-	best = clf.best_params_
-	return [((best['hidden_layer_sizes'])[0]), best['solver'], best['alpha']]
+        clf = GridSearchCV(ann, {'solver':('adam',), 'alpha':np.random.uniform(self._alpha_begin, self._alpha_end, 75), 'hidden_layer_sizes': self.hidden_layers_parameter()}, n_jobs=8, cv=10)
+        x,y = self.cv_dataset()
+        clf.fit(x,y)
+        best = clf.best_params_
+        return [((best['hidden_layer_sizes'])[0]), best['solver'], best['alpha']]
 
 
 
