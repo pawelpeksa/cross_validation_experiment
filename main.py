@@ -150,7 +150,7 @@ def determine_parameters_all(x_train, y_train, x_test, y_test, n_fold):
         # let scikit take care about parallelism in this case
         determine_parameters_sequence(svm_opt, ann_opt, tree_opt, forest_opt)
     else:
-        determine_parameters_sequence(svm_opt, ann_opt, tree_opt, forest_opt)
+        determine_parameters_parallel(svm_opt, ann_opt, tree_opt, forest_opt)
 
     config.svm = svm_opt.svm
     config.ann = ann_opt.ann
